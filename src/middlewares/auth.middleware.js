@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { errorResponse } = require('../utils/responseHandler');
 
 const protect = async (req, res, next) => {
   let token;
@@ -21,12 +20,20 @@ const protect = async (req, res, next) => {
       next();
     } catch (error) {
       console.error('Auth Middleware Error:', error);
-      return errorResponse(res, 'Not authorized, token failed', 401, error);
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, token failed',
+        error: process.env.NODE_ENV === 'development' ? error : undefined
+      });
     }
   }
 
   if (!token) {
-    return errorResponse(res, 'Not authorized, no token', 401);
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, no token',
+      error: process.env.NODE_ENV === 'development' ? null : undefined
+    });
   }
 };
 

@@ -3,7 +3,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const routes = require('./routes');
-const { errorResponse } = require('./utils/responseHandler');
 
 const app = express();
 
@@ -19,14 +18,22 @@ app.use('/api', routes);
 
 // 404 Handler
 app.use((req, res) => {
-  return errorResponse(res, 'Route not found', 404);
+  return res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    error: process.env.NODE_ENV === 'development' ? null : undefined
+  });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   const statusCode = err.statusCode || 500;
-  return errorResponse(res, err.message || 'Internal Server Error', statusCode, err);
+  return res.status(statusCode).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err : undefined
+  });
 });
 
 module.exports = app;

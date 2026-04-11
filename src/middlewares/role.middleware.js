@@ -1,5 +1,3 @@
-const { errorResponse } = require('../utils/responseHandler');
-
 /**
  * Middleware to restrict access to specific roles
  * @param {Array} roles - Allowed roles
@@ -7,18 +5,22 @@ const { errorResponse } = require('../utils/responseHandler');
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user || !req.user.roles) {
-      return errorResponse(res, 'Not authorized, roles missing', 403);
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized, roles missing',
+        error: process.env.NODE_ENV === 'development' ? null : undefined
+      });
     }
 
     // Check if user has at least one of the required roles
     const hasRole = req.user.roles.some((role) => roles.includes(role));
 
     if (!hasRole) {
-      return errorResponse(
-        res, 
-        `User role is not authorized to access this route. Required roles: ${roles.join(', ')}`, 
-        403
-      );
+      return res.status(403).json({
+        success: false,
+        message: `User role is not authorized to access this route. Required roles: ${roles.join(', ')}`,
+        error: process.env.NODE_ENV === 'development' ? null : undefined
+      });
     }
 
     next();
