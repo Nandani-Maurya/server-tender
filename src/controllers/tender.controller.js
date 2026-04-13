@@ -32,6 +32,7 @@ class TenderController {
         `SELECT t.*, u.name as creator_name 
          FROM tender.tenders t 
          LEFT JOIN tender.users u ON t.created_by = u.id 
+         WHERE t.life_cycle_status = 'ACTIVE'
          ORDER BY t.created_at DESC`
       );
 
@@ -55,7 +56,7 @@ class TenderController {
         `SELECT t.*, u.name as creator_name 
          FROM tender.tenders t 
          LEFT JOIN tender.users u ON t.created_by = u.id 
-         WHERE t.id = $1`,
+         WHERE t.id = $1 AND t.life_cycle_status = 'ACTIVE'`,
         [id]
       );
 
@@ -115,7 +116,12 @@ class TenderController {
   async deleteTender(req, res) {
     try {
       const { id } = req.params;
-      const result = await db.query('DELETE FROM tender.tenders WHERE id = $1 RETURNING *', [id]);
+      const result = await db.query(
+        `UPDATE tender.tenders 
+         SET life_cycle_status = 'INACTIVE', updated_at = NOW() 
+         WHERE id = $1 RETURNING *`, 
+        [id]
+      );
 
       if (result.rows.length === 0) {
         return res.status(404).json({
@@ -126,7 +132,7 @@ class TenderController {
 
       return res.status(200).json({
         success: true,
-        message: 'Tender deleted successfully'
+        message: 'Tender inactivated successfully'
       });
     } catch (error) {
       console.error('Delete Tender Error:', error);

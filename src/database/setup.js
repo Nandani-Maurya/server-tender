@@ -15,7 +15,13 @@ const setupDatabase = async () => {
 
     const sqlFiles = [
       'master_setup.sql',
-      'tenders.sql'
+      'tenders.sql',
+      'tender_categories.sql',
+      'update_status.sql',
+      'project_types.sql',
+      'remove_type_code.sql',
+      'tender_formats.sql',
+      'format_mappings.sql'
     ];
 
     for (const file of sqlFiles) {
