@@ -3,18 +3,20 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const routes = require('./routes');
+const parsePdfRoute = require('./routes/Parsepdf.js'); // ✅ import upar
 
 const app = express();
 
 // Middlewares
-app.use(helmet()); // Security headers
-app.use(cors()); // Enable CORS
-app.use(express.json()); // Body parser
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev')); // Logging
+app.use(morgan('dev'));
 
 // API Routes
 app.use('/api', routes);
+app.use('/api', parsePdfRoute); // ✅ 404 handler se PEHLE
 
 // 404 Handler
 app.use((req, res) => {
