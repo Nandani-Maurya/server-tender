@@ -7,6 +7,8 @@ const categoryRoutes = require('./category.routes');
 const projectTypeRoutes = require('./projectType.routes');
 const formatRoutes = require('./format.routes');
 const mappingRoutes = require('./mapping.routes');
+const documentRoutes = require('./documentRoutes');
+const organizationRoutes = require('./organizationRoutes');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -16,6 +18,8 @@ router.use('/categories', categoryRoutes);
 router.use('/project-types', projectTypeRoutes);
 router.use('/formats', formatRoutes);
 router.use('/mappings', mappingRoutes);
+router.use('/documents', documentRoutes);
+router.use('/organizations', organizationRoutes);
 
 // Health check route
 router.get('/health', (req, res) => {

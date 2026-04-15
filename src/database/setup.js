@@ -21,7 +21,8 @@ const setupDatabase = async () => {
       'project_types.sql',
       'remove_type_code.sql',
       'tender_formats.sql',
-      'format_mappings.sql'
+      'format_mappings.sql',
+      'organizations.sql'
     ];
 
     for (const file of sqlFiles) {
