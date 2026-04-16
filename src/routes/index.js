@@ -5,8 +5,6 @@ const userRoutes = require('./user.routes');
 const tenderRoutes = require('./tender.routes');
 const categoryRoutes = require('./category.routes');
 const projectTypeRoutes = require('./projectType.routes');
-const formatRoutes = require('./format.routes');
-const mappingRoutes = require('./mapping.routes');
 const documentRoutes = require('./documentRoutes');
 const organizationRoutes = require('./organizationRoutes');
 
@@ -16,8 +14,6 @@ router.use('/users', userRoutes);
 router.use('/tenders', tenderRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/project-types', projectTypeRoutes);
-router.use('/formats', formatRoutes);
-router.use('/mappings', mappingRoutes);
 router.use('/documents', documentRoutes);
 router.use('/organizations', organizationRoutes);
 

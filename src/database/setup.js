@@ -20,8 +20,6 @@ const setupDatabase = async () => {
       'update_status.sql',
       'project_types.sql',
       'remove_type_code.sql',
-      'tender_formats.sql',
-      'format_mappings.sql',
       'organizations.sql'
     ];
 

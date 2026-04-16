@@ -164,7 +164,7 @@ class AuthController {
           roles: user.roles
         },
         process.env.JWT_SECRET,
-        { expiresIn: '30d' } // Long lived for demo/production convenience, can be shorter
+        { expiresIn: process.env.JWT_EXPIRES_IN } 
       );
 
     
