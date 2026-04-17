@@ -7,7 +7,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'tenders/documents',
     allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
-    // By providing a unique public id, Cloudinary handles avoiding overwrites
+
     public_id: (req, file) => {
       return `${Date.now()}_${file.originalname.replace(/[^a-zA-Z0-9]/g, '_')}`;
     }

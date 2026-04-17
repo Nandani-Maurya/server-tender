@@ -1,8 +1,6 @@
 const db = require('../config/db');
 
-/**
- * Upload a document to Cloudinary and save its metadata to the documents table.
- */
+
 exports.uploadDocument = async (req, res) => {
   try {
     const file = req.file;
@@ -12,9 +10,9 @@ exports.uploadDocument = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    // file.path contains the Cloudinary URL because of CloudinaryStorage
-    // file.mimetype contains the mime type
-    // file.originalname has the original name
+
+
+
 
     const insertResult = await db.query(
       `INSERT INTO tender.documents (file_url, label, original_name, mime_type)

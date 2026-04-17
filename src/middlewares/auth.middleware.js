@@ -8,31 +8,40 @@ const protect = async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     try {
-      // Get token from header
+
       token = req.headers.authorization.split(' ')[1];
 
-      // Verify token
+
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Add user from payload to request
+
       req.user = decoded;
-      
+
       next();
     } catch (error) {
       console.error('Auth Middleware Error:', error);
+
+
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({
+          code: 'TOKEN_EXPIRED',
+          message: 'Your session has expired. Please log in again to continue.'
+        });
+      }
+
+
       return res.status(401).json({
-        success: false,
-        message: 'Not authorized, token failed',
-        error: process.env.NODE_ENV === 'development' ? error : undefined
+        code: 'INVALID_TOKEN',
+        message: 'Invalid session. Please log in again.'
       });
     }
   }
 
+
   if (!token) {
     return res.status(401).json({
-      success: false,
-      message: 'Not authorized, no token',
-      error: process.env.NODE_ENV === 'development' ? null : undefined
+      code: 'NO_TOKEN',
+      message: 'Access denied. No authentication token provided.'
     });
   }
 };

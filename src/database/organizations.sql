@@ -1,24 +1,24 @@
 CREATE SCHEMA IF NOT EXISTS tender;
 
--- Documents Table
+
 CREATE TABLE IF NOT EXISTS tender.documents (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   file_url text NOT NULL,
-  label text,       -- e.g., 'ISO_CERT_1', 'BANK_STATEMENT'
+  label text,
   original_name text,
   mime_type text,
   created_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
--- Drop tables if needed to recreate them (for local dev testing)
+
 DROP TABLE IF EXISTS tender.bank_details CASCADE;
 DROP TABLE IF EXISTS tender.iso_certificates CASCADE;
 DROP TABLE IF EXISTS tender.organizations CASCADE;
 
--- Documents Table remains untouched, or can be dropped if we want total wipe
--- CREATE TABLE IF NOT EXISTS tender.documents ...
 
--- Organizations Table
+
+
+
 CREATE TABLE IF NOT EXISTS tender.organizations (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   name_of_firm text,
@@ -45,18 +45,18 @@ CREATE TABLE IF NOT EXISTS tender.organizations (
   updated_at timestamp with time zone DEFAULT now()
 );
 
--- ISO Certificates Table
+
 CREATE TABLE IF NOT EXISTS tender.iso_certificates (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   organization_id uuid REFERENCES tender.organizations(id) ON DELETE CASCADE,
   certificate_type text,
-  year text, 
+  year text,
   first_image_id uuid REFERENCES tender.documents(id) ON DELETE SET NULL,
   second_image_id uuid REFERENCES tender.documents(id) ON DELETE SET NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
--- Bank Details Table
+
 CREATE TABLE IF NOT EXISTS tender.bank_details (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   organization_id uuid REFERENCES tender.organizations(id) ON DELETE CASCADE,

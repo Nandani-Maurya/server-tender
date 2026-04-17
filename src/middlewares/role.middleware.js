@@ -1,7 +1,4 @@
-/**
- * Middleware to restrict access to specific roles
- * @param {Array} roles - Allowed roles
- */
+
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user || !req.user.roles) {
@@ -12,7 +9,7 @@ const authorize = (...roles) => {
       });
     }
 
-    // Check if user has at least one of the required roles
+
     const hasRole = req.user.roles.some((role) => roles.includes(role));
 
     if (!hasRole) {

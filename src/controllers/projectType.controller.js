@@ -1,9 +1,7 @@
 const db = require('../config/db');
 
 class ProjectTypeController {
-  /**
-   * Get all active project types
-   */
+
   async getProjectTypes(req, res) {
     try {
       const result = await db.query(
@@ -25,9 +23,7 @@ class ProjectTypeController {
     }
   }
 
-  /**
-   * Create a new project type
-   */
+
   async createProjectType(req, res) {
     try {
       const { type_name } = req.body;
@@ -39,7 +35,7 @@ class ProjectTypeController {
         });
       }
 
-      // Check if already exists
+
       const existing = await db.query(
         'SELECT id FROM tender.project_types WHERE type_name = $1',
         [type_name]
@@ -53,7 +49,7 @@ class ProjectTypeController {
       }
 
       const result = await db.query(
-        `INSERT INTO tender.project_types (type_name) 
+        `INSERT INTO tender.project_types (type_name)
          VALUES ($1) RETURNING *`,
         [type_name]
       );
@@ -73,9 +69,7 @@ class ProjectTypeController {
     }
   }
 
-  /**
-   * Update a project type
-   */
+
   async updateProjectType(req, res) {
     try {
       const { id } = req.params;
@@ -89,8 +83,8 @@ class ProjectTypeController {
       }
 
       const result = await db.query(
-        `UPDATE tender.project_types 
-         SET type_name = $1, updated_at = NOW() 
+        `UPDATE tender.project_types
+         SET type_name = $1, updated_at = NOW()
          WHERE id = $2 RETURNING *`,
         [type_name, id]
       );
@@ -117,9 +111,7 @@ class ProjectTypeController {
     }
   }
 
-  /**
-   * Soft delete a project type (Inactivate)
-   */
+
   async deleteProjectType(req, res) {
     try {
       const { id } = req.params;

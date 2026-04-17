@@ -1,9 +1,7 @@
 const db = require('../config/db');
 
 class CategoryController {
-  /**
-   * Get all active tender categories
-   */
+
   async getTenderCategories(req, res) {
     try {
       const result = await db.query(
@@ -25,9 +23,7 @@ class CategoryController {
     }
   }
 
-  /**
-   * Create a new tender category
-   */
+
   async createTenderCategory(req, res) {
     try {
       const { category_name, category_description } = req.body;
@@ -39,7 +35,7 @@ class CategoryController {
         });
       }
 
-      // Check if already exists
+
       const existing = await db.query(
         'SELECT id FROM tender.tender_categories WHERE category_name = $1',
         [category_name]
@@ -53,7 +49,7 @@ class CategoryController {
       }
 
       const result = await db.query(
-        `INSERT INTO tender.tender_categories (category_name, category_description) 
+        `INSERT INTO tender.tender_categories (category_name, category_description)
          VALUES ($1, $2) RETURNING *`,
         [category_name, category_description]
       );
@@ -73,9 +69,7 @@ class CategoryController {
     }
   }
 
-  /**
-   * Soft delete a category
-   */
+
   async deleteTenderCategory(req, res) {
     try {
       const { id } = req.params;
@@ -105,9 +99,7 @@ class CategoryController {
     }
   }
 
-  /**
-   * Update a tender category
-   */
+
   async updateTenderCategory(req, res) {
     try {
       const { id } = req.params;
@@ -121,8 +113,8 @@ class CategoryController {
       }
 
       const result = await db.query(
-        `UPDATE tender.tender_categories 
-         SET category_name = $1, category_description = $2, updated_at = NOW() 
+        `UPDATE tender.tender_categories
+         SET category_name = $1, category_description = $2, updated_at = NOW()
          WHERE id = $3 RETURNING *`,
         [category_name, category_description, id]
       );

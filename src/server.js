@@ -6,8 +6,8 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    console.log('Connecting to DB:', process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@')); // Hide password
-    // Test database connection
+    console.log('Connecting to DB:', process.env.DATABASE_URL.replace(/:[^:]*@/, ':****@'));
+
     await db.query('SELECT NOW()');
     console.log('Database connection verified');
 
