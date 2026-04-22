@@ -79,8 +79,11 @@ class CategoryController {
       }
 
       const result = await db.query(
-        `INSERT INTO tender.tender_categories (category_name, category_description, created_by)
-         VALUES ($1, $2, $3) RETURNING *`,
+        `INSERT INTO tender.tender_categories (
+          record_uid, category_name, category_description, created_by, created_at, updated_at, life_cycle_status
+        )
+         VALUES (nextval('tender.tender_categories_record_uid_seq'), $1, $2, $3, NOW(), NULL, 'ACTIVE')
+         RETURNING *`,
         [categoryName, categoryDescription, userId]
       );
 
@@ -170,7 +173,7 @@ class CategoryController {
       inTransaction = true;
 
       const existingCategory = await client.query(
-        `SELECT id, category_name, category_description
+        `SELECT id, record_uid, category_name, category_description
          FROM tender.tender_categories
          WHERE id = $1 AND life_cycle_status = 'ACTIVE'
          FOR UPDATE`,
@@ -248,10 +251,10 @@ class CategoryController {
 
       const newActiveCategory = await client.query(
         `INSERT INTO tender.tender_categories (
-          category_name, category_description, life_cycle_status, created_by, updated_at
-        ) VALUES ($1, $2, 'ACTIVE', $3, NULL)
+          record_uid, category_name, category_description, life_cycle_status, created_by, created_at, updated_at
+        ) VALUES ($1, $2, $3, 'ACTIVE', $4, NOW(), NULL)
         RETURNING *`,
-        [categoryName, categoryDescription, userId]
+        [currentCategory.record_uid, categoryName, categoryDescription, userId]
       );
 
       await client.query('COMMIT');
