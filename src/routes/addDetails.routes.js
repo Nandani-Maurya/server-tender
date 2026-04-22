@@ -15,11 +15,11 @@ router.get('/active', basicDetailsController.getActiveOrganization);
 router.post('/basic-firm', basicDetailsController.saveOrganization);
 
 
-router.get('/bank/:orgId', bankController.getBankDetails);
+router.get('/bank', bankController.getBankDetails);
 router.post('/bank-details', bankController.saveBankDetails);
 
 
-router.get('/iso/:orgId', isoController.getIsoCertificates);
+router.get('/iso', isoController.getIsoCertificates);
 router.post('/iso-certificates', isoController.saveIsoCertificates);
 
 module.exports = router;
