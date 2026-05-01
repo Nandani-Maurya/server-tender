@@ -9,10 +9,10 @@ const { protect } = require('../middlewares/auth.middleware');
 router.use(protect);
 
 
-router.get('/active', basicDetailsController.getActiveOrganization);
+router.get('/organization', basicDetailsController.getActiveOrganization);
 
 
-router.post('/basic-firm', basicDetailsController.saveOrganization);
+router.post('/organization', basicDetailsController.saveOrganization);
 
 
 router.get('/bank', bankController.getBankDetails);

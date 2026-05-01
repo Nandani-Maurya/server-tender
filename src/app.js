@@ -12,6 +12,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
+
 
 app.use('/api', routes);
 

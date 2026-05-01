@@ -14,21 +14,24 @@ exports.saveIsoCertificates = async (req, res) => {
 
     await client.query('BEGIN');
 
-
-    await client.query('DELETE FROM tender.iso_certificates');
+    // Deactivate existing active records instead of deleting
+    await client.query(`
+      UPDATE tender.iso_certificates 
+      SET life_cycle_status = 'INACTIVE', updated_by = $1, updated_at = NOW() 
+      WHERE life_cycle_status = 'ACTIVE'
+    `, [userId]);
 
     const isoQuery = `
       INSERT INTO tender.iso_certificates (
-        certificate_type, year, first_image_id, second_image_id, created_by
-      ) VALUES ($1, $2, $3, $4, $5)
+        certificate_type, year, document_ids, life_cycle_status, created_by, created_at, updated_at
+      ) VALUES ($1, $2, $3, 'ACTIVE', $4, NOW(), NOW())
     `;
 
     for (const iso of iso_certificates) {
       await client.query(isoQuery, [
         iso.certificate_type,
         iso.year,
-        iso.first_image_id || null,
-        iso.second_image_id || null,
+        JSON.stringify(iso.document_ids || []),
         userId
       ]);
     }
@@ -49,11 +52,17 @@ exports.saveIsoCertificates = async (req, res) => {
 exports.getIsoCertificates = async (req, res) => {
   try {
     const query = `
-      SELECT iso.*, d1.file_url as first_image_url, d2.file_url as second_image_url
+      SELECT iso.*, 
+      (
+        SELECT json_agg(json_build_object('id', d.id, 'file_url', d.file_url))
+        FROM tender.documents d
+        WHERE d.id = ANY(
+          SELECT (jsonb_array_elements_text(iso.document_ids))::uuid
+        )
+      ) as documents
       FROM tender.iso_certificates iso
-      LEFT JOIN tender.documents d1 ON iso.first_image_id = d1.id
-      LEFT JOIN tender.documents d2 ON iso.second_image_id = d2.id
-      ORDER BY iso.id ASC
+      WHERE iso.life_cycle_status = 'ACTIVE'
+      ORDER BY iso.created_at ASC
     `;
     const result = await db.query(query);
     res.status(200).json({ success: true, data: result.rows });
@@ -62,3 +71,6 @@ exports.getIsoCertificates = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+
+
